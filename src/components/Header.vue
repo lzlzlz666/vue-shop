@@ -4,7 +4,7 @@
         <!-- Logo -->
         <div class="logo">
           <router-link to="/">
-            <h1>Vue商城</h1>
+            <h1>LZ🥳 商城</h1>
           </router-link>
         </div>
   
