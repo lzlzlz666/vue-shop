@@ -1,5 +1,5 @@
 <template>
-    <div class="cart">
+    <div>
       <el-container>
         <el-header>
           <nav-header />
@@ -172,11 +172,6 @@
   </script>
   
   <style scoped>
-  .cart {
-    min-height: 100vh;
-    background-color: #f5f5f5;
-  }
-  
   .cart-container {
     background-color: #fff;
     padding: 20px;

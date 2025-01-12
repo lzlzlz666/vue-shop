@@ -10,7 +10,7 @@
             <el-row :gutter="40">
               <!-- 商品图片 -->
               <el-col :span="12">
-                <el-carousel trigger="click" height="400px">
+                <el-carousel trigger="click" height="460px">
                   <el-carousel-item v-for="i in 4" :key="i">
                     <img :src="product.productImg" alt="product image">
                   </el-carousel-item>
@@ -37,15 +37,15 @@
                     </div>
                   </div>
 
-                                  <!-- 规格选择 -->
-                <div class="specs-section">
-                  <h3>规格</h3>
-                  <el-radio-group v-model="selectedSpec">
-                    <el-radio-button label="规格1" />
-                    <el-radio-button label="规格2" />
-                    <el-radio-button label="规格3" />
-                  </el-radio-group>
-                </div>
+                  <!-- 规格选择 -->
+                  <div class="specs-section">
+                    <h3>规格</h3>
+                    <el-radio-group v-model="selectedSpec">
+                      <el-radio-button label="规格1" />
+                      <el-radio-button label="规格2" />
+                      <el-radio-button label="规格3" />
+                    </el-radio-group>
+                  </div>
   
                   <!-- 数量选择 -->
                   <div class="quantity-section">

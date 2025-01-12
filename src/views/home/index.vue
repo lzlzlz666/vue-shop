@@ -63,10 +63,6 @@ const hotProducts = ref([]); // 用于存储热销商品数据
 // 将图片路径存放到数组中
 const imageItems = [lunbo1, lunbo2, lunbo3]
 
-// 商品分类图片
-import yhr from '@/assets/yhr.jpg'
-const getImageUrl = yhr // 直接将导入的图片路径作为返回值
-
 onMounted(async () => {
   try {
     categories.value = await fetchCategories(); // 获取分类数据

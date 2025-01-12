@@ -6,10 +6,15 @@ const http = axios.create({
   timeout: 10000, // 设置请求超时时间
 });
 
+import { useTokenStore } from '@/stores/token.js'
 // 请求拦截器
 http.interceptors.request.use(
   (config) => {
     // 可以在这里添加请求头或其他配置
+    const tokenStore = useTokenStore();
+    if(tokenStore.token){
+      config.headers.Authorization = tokenStore.token
+    }
     return config;
   },
   (error) => {

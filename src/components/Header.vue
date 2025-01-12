@@ -43,6 +43,7 @@
             </template>
             <el-menu-item index="/orders">我的订单</el-menu-item>
             <el-menu-item index="/profile">个人信息</el-menu-item>
+            <el-menu-item index="/login">我要登录</el-menu-item>
             <el-menu-item @click="handleLogout">退出登录</el-menu-item>
           </el-sub-menu>
         </el-menu>
