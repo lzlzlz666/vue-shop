@@ -28,10 +28,10 @@
                 <el-table-column label="商品信息">
                   <template #default="scope">
                     <div class="product-info">
-                      <img :src="scope.row.image" :alt="scope.row.name">
+                      <img :src="scope.row.picture" :alt="scope.row.name">
                       <div class="product-details">
                         <h3>{{ scope.row.name }}</h3>
-                        <p class="specs">{{ scope.row.specs }}</p>
+                        <p class="specs">{{ scope.row.format }}</p>
                       </div>
                     </div>
                   </template>
@@ -45,10 +45,10 @@
                 </el-table-column>
   
                 <!-- 数量 -->
-                <el-table-column label="数量" width="150">
+                <el-table-column label="数量" width="200">
                   <template #default="scope">
                     <el-input-number 
-                      v-model="scope.row.quantity" 
+                      v-model="scope.row.count" 
                       :min="1" 
                       :max="99"
                       @change="updateTotal"
@@ -59,7 +59,7 @@
                 <!-- 小计 -->
                 <el-table-column label="小计" width="120">
                   <template #default="scope">
-                    <span class="subtotal">¥{{ scope.row.price * scope.row.quantity }}</span>
+                    <span class="subtotal">¥{{ scope.row.price * scope.row.count }}</span>
                   </template>
                 </el-table-column>
   
@@ -85,7 +85,7 @@
                 </div>
                 <div class="right">
                   <div class="total-info">
-                    已选择 <span class="count">{{ selectedCount }}</span> 件商品
+                    已选择 <span class="count">{{ selectedCount }}</span> 种商品
                     合计：<span class="total-price">¥{{ totalPrice }}</span>
                   </div>
                   <el-button type="primary" size="large" @click="checkout">
@@ -105,31 +105,14 @@
   </template>
   
   <script setup>
-  import { ref, computed } from 'vue'
+  import { ref, computed, onMounted } from 'vue'
   import NavHeader from '../../components/Header.vue'
   import NavFooter from '../../components/Footer.vue'
-  
+  import { useCartStore } from '@/stores/cartStore'
+  const cartStore = useCartStore();
+
   // 模拟购物车数据
-  const cartItems = ref([
-    {
-      id: 1,
-      name: '商品1',
-      specs: '规格1',
-      price: 199,
-      quantity: 1,
-      selected: true,
-      image: 'https://picsum.photos/100/100?random=1'
-    },
-    {
-      id: 2,
-      name: '商品2',
-      specs: '规格2',
-      price: 299,
-      quantity: 2,
-      selected: true,
-      image: 'https://picsum.photos/100/100?random=2'
-    }
-  ])
+  const cartItems = ref([])
   
   // 计算属性
   const selectAll = computed({
@@ -144,7 +127,7 @@
   const totalPrice = computed(() => 
     cartItems.value
       .filter(item => item.selected)
-      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .reduce((total, item) => total + item.price * item.count, 0)
       .toFixed(2)
   )
   
@@ -167,8 +150,13 @@
   
   const checkout = () => {
     // 结算逻辑
-    console.log('checkout')
+    console.log(cartItems.value)
   }
+
+  onMounted(() => {
+    cartItems.value = cartStore.cartList
+    console.log(cartItems)
+  })
   </script>
   
   <style scoped>
@@ -186,12 +174,14 @@
   }
   
   .product-info {
+    width: 400px;
+    height: 110px;
     display: flex;
     align-items: center;
   }
   
   .product-info img {
-    width: 80px;
+    width: 120px;
     height: 80px;
     object-fit: cover;
     margin-right: 15px;

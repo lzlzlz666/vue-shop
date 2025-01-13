@@ -31,7 +31,7 @@
           <el-menu-item index="/">首页</el-menu-item>
           <el-menu-item index="/products">全部商品</el-menu-item>
           <el-menu-item index="/cart">
-            <el-badge :value="cartCount" class="cart-badge">
+            <el-badge :value="cartItems.length" class="cart-badge">
               <el-icon><ShoppingCart /></el-icon> 购物车
             </el-badge>
           </el-menu-item>
@@ -53,12 +53,17 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { Search, ShoppingCart, User } from '@element-plus/icons-vue'
 
 const searchText = ref('')
-const cartCount = ref(0)
+
+import { useCartStore } from '@/stores/cartStore'
+const cartStore = useCartStore();
+
+const cartCount = ref(0);
+const cartItems = ref([]);
 
 // 获取当前路由信息
 // const route = useRoute()
@@ -70,6 +75,12 @@ const handleLogout = () => {
   // 退出登录逻辑
   console.log('logout')
 }
+
+onMounted(() => {
+  cartItems.value = cartStore.cartList
+  console.log(cartItems)
+})
+
 </script>
 
 <style scoped>
