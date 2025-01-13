@@ -25,6 +25,10 @@
                     <el-input v-model="userInfo.username" readonly />
                   </el-form-item>
 
+                  <el-form-item label="昵称">
+                    <el-input v-model="userInfo.nickname" />
+                  </el-form-item>
+
                   <el-form-item label="邮箱">
                     <el-input v-model="userInfo.email" readonly />
                   </el-form-item>
@@ -72,6 +76,7 @@ import NavFooter from '../../components/Footer.vue'
 
 const userInfo = ref({
   username: 'LZ商户',
+  nickname: '商户昵称',  // 新增昵称字段
   email: 'lzshop@example.com',
   phone: '1234567890',
   gender: '男',
@@ -86,7 +91,6 @@ const saveInfo = () => {
 </script>
 
 <style lang="scss" scoped>
-
 .profile-container {
   background-color: #fff;
   border-radius: 10px;

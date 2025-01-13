@@ -93,6 +93,7 @@
   import NavHeader from '../../components/Header.vue'
   import NavFooter from '../../components/Footer.vue'
   import { fetchProductDetail } from '@/api/product'; 
+  import { ElMessage } from 'element-plus'
   
   const selectedSpec = ref('规格1')
   const quantity = ref(1)
@@ -111,8 +112,22 @@
     }
   });
   
+  import { useCartStore } from '@/stores/cartStore';
+  const cartStore = useCartStore();
+
   const addToCart = () => {
     // 添加到购物车逻辑
+    cartStore.addCart({
+      productId: product.value.productId,
+      name: product.value.productName,
+      picture: product.value.productImg,
+      price: product.value.productPrice,
+      format: selectedSpec.value,
+      count: quantity.value,
+      select: true,
+    })
+    ElMessage.success('添加到购物车成功');
+    console.log(cartStore.cartList)
   }
   
   const buyNow = () => {
