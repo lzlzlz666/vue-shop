@@ -56,11 +56,14 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { Search, ShoppingCart, User } from '@element-plus/icons-vue'
+import { useTokenStore } from '@/stores/token'
+import { ElMessage } from 'element-plus'
 
 const searchText = ref('')
 
 import { useCartStore } from '@/stores/cartStore'
 const cartStore = useCartStore();
+const tokenStore = useTokenStore()
 
 const cartCount = ref(0);
 const cartItems = ref([]);
@@ -72,8 +75,8 @@ const cartItems = ref([]);
 // const isProductsPage = computed(() => route.path === '/products')
 
 const handleLogout = () => {
-  // 退出登录逻辑
-  console.log('logout')
+  tokenStore.removeToken();
+  ElMessage.success('退出成功!');
 }
 
 onMounted(() => {

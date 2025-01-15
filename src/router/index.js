@@ -30,7 +30,12 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('../views/user/login.vue')
-  }
+  },
+  {
+    path: '/checkout',
+    name: 'Checkout',
+    component: () => import('../views/checkOut/index.vue')
+  },
 ]
 
 const router = createRouter({
