@@ -153,16 +153,30 @@ const clearCart = () => {
   cartItems.value = []
 }
 
+// const checkout = () => {
+//   console.log(tokenStore.token)
+//   if (!tokenStore.token) {
+//     // 如果没有登录，弹出提示框
+//     console.log("您还没有登录哦");
+//     router.push('/login')
+//   } else {
+//     // 结算逻辑
+//     router.push("/checkout")
+//     console.log(cartItems.value)
+//   }
+// }
+
+// 结算
 const checkout = () => {
-  console.log(tokenStore.token)
   if (!tokenStore.token) {
-    // 如果没有登录，弹出提示框
-    console.log("您还没有登录哦");
-    router.push('/login')
+    router.push('/login');
   } else {
-    // 结算逻辑
-    router.push("/checkout")
-    console.log(cartItems.value)
+    // 结算时只传递选中的商品
+    const selectedItems = cartItems.value.filter(item => item.selected);
+    router.push({
+      name: 'Checkout',
+      query: { items: JSON.stringify(selectedItems) }  // 将选中的商品传递到结算页面
+    });
   }
 }
 
