@@ -167,7 +167,7 @@ import { ElMessage } from 'element-plus'
 import NavHeader from '../../components/Header.vue'
 import NavFooter from '../../components/Footer.vue'
 import { useCartStore } from '@/stores/cartStore'
-import { fetchUserAddressList, updateDefaultAddress, addUserAddress } from '@/api/order'
+import { fetchUserAddressList, updateDefaultAddress, addUserAddress, createOrder } from '@/api/order'
 
 import { useRouter } from 'vue-router';
 
@@ -230,13 +230,49 @@ const addNewAddress = async () => {
   }
 };
 
-const confirmOrder = () => {
+const confirmOrder = async () => {
   if (!curAddress.value) {
     ElMessage.warning('请先选择收货地址！');
     return;
   }
-  router.push('/pay');
-}
+
+  // 从购物车中提取订单信息
+  const orderItems = cartItems.value.map((item) => ({
+    productId: item.productId,
+    productFormat: item.format,
+    productCount: item.count,
+    productPrice: item.price
+  }));
+
+  // 用于存储所有生成订单的 orderId
+  const orderIds = [];
+
+  try {
+    // 循环调用后端接口，为每个商品生成一个订单
+    for (const orderItem of orderItems) {
+      const result = await createOrder(orderItem);
+      console.log('订单生成成功:', result);
+
+      // 收集 orderId
+      if (result.orderId) {
+        orderIds.push(result.orderId);
+      }
+    }
+
+    // 如果所有订单生成成功，提示用户并跳转到支付页面
+    ElMessage.success('所有订单生成成功！');
+    router.push({
+      path: '/pay',
+      query: {
+        payMoney: (sumPrice.value + transitPrice.value).toFixed(2),
+        orderIds: JSON.stringify(orderIds) // 将 orderId 数组传递到支付页面
+      }
+    });
+  } catch (error) {
+    ElMessage.error('订单生成失败，请稍后再试！');
+    console.error('订单生成失败:', error);
+  }
+};
 
 
 onMounted(async () => {
@@ -247,6 +283,7 @@ onMounted(async () => {
 
   const selectedItems = JSON.parse(router.currentRoute.value.query.items || '[]');
   cartItems.value = selectedItems;
+  console.log(cartItems.value);
   calculateSumPrice();
 });
 

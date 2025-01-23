@@ -39,9 +39,9 @@
           <!-- 用户菜单 -->
           <el-sub-menu index="user">
             <template #title>
-              <el-icon><User /></el-icon> 个人中心
+              <el-icon><User /></el-icon> 我的资料
             </template>
-            <el-menu-item index="/orders">我的订单</el-menu-item>
+            <el-menu-item index="/member">个人中心</el-menu-item>
             <el-menu-item index="/profile">个人信息</el-menu-item>
             <el-menu-item index="/login">我要登录</el-menu-item>
             <el-menu-item @click="handleLogout">退出登录</el-menu-item>
@@ -54,7 +54,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { Search, ShoppingCart, User } from '@element-plus/icons-vue'
 import { useTokenStore } from '@/stores/token'
 import { ElMessage } from 'element-plus'
@@ -64,6 +64,7 @@ const searchText = ref('')
 import { useCartStore } from '@/stores/cartStore'
 const cartStore = useCartStore();
 const tokenStore = useTokenStore()
+const router = useRouter()
 
 const cartCount = ref(0);
 const cartItems = ref([]);
@@ -76,6 +77,7 @@ const cartItems = ref([]);
 
 const handleLogout = () => {
   tokenStore.removeToken();
+  router.push('/');
   ElMessage.success('退出成功!');
 }
 

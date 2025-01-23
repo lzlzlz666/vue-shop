@@ -89,7 +89,7 @@
   
   <script setup>
   import { ref, onMounted } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import NavHeader from '../../components/Header.vue'
   import NavFooter from '../../components/Footer.vue'
   import { fetchProductDetail } from '@/api/product'; 
@@ -101,6 +101,7 @@
   const product = ref({}); // 用于存储商品数据
 
   const route = useRoute(); // 使用 useRoute 获取当前路由对象
+  const router = useRouter();
 
   onMounted(async () => {
     const productId = route.params.id; // 从路由参数中获取产品 ID
@@ -127,11 +128,12 @@
       select: true,
     })
     ElMessage.success('添加到购物车成功');
-    console.log(cartStore.cartList)
+    router.push('/cart');
   }
   
   const buyNow = () => {
     // 立即购买逻辑
+    ElMessage.warning('请先点击加入购物车哦！');
   }
   </script>
   

@@ -10,10 +10,10 @@
           <div class="container">
             <!-- 付款信息 -->
             <div class="pay-info">
-              <span class="icon iconfont icon-queren2"></span>
+              <img src="@/assets/order-submit.png" style="width: 120px; height:120px">
               <div class="tip">
                 <p>订单提交成功！请尽快完成支付。</p>
-                <p>支付还剩 <span>24分30秒</span>, 超时后将取消订单</p>
+                <p>支付还剩 <span>{{ formattedTime }}</span>, 超时后将取消订单</p>
               </div>
               <div class="amount">
                 <span>应付总额：</span>
@@ -26,8 +26,11 @@
               <p class="head">选择以下支付方式付款</p>
               <div class="item">
                 <p>支付平台</p>
-                <a class="btn wx"></a>
-                <a class="btn alipay" :href="payUrl"></a>
+                <a class="btn wx" @click="selectPayMethod('wx')"></a>
+                <a class="btn alipay" @click="selectPayMethod('alipay')"></a>
+                <!-- 根据选中的支付方式动态显示图片 -->
+                <img v-if="selectedPayMethod === 'wx'" src="@/assets/weixin.jpg" class="payImg">
+                <img v-if="selectedPayMethod === 'alipay'" src="@/assets/zhifubao.jpg" class="payImg">
               </div>
               <div class="item">
                 <p>支付方式</p>
@@ -36,6 +39,11 @@
                 <a class="btn">建设银行</a>
                 <a class="btn">农业银行</a>
                 <a class="btn">交通银行</a>
+                <a class="btn">中国银行</a>
+              </div>
+              <!-- 模拟支付成功按钮 -->
+              <div class="pay-success-btn">
+                <el-button type="primary" @click="paymentSuccess" style="width: 100px; height: 50px;">支付成功</el-button>
               </div>
             </div>
           </div>
@@ -49,11 +57,92 @@
   </div>
 </template>
 
+
 <script setup>
+import { ref, onMounted, computed, onBeforeUnmount  } from 'vue'
 import NavHeader from '@/components/Header.vue'
 import NavFooter from '@/components/Footer.vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { updateOrderStatus } from '@/api/order'
+import { useCartStore } from '@/stores/cartStore'
 
-const payInfo = {}
+const route = useRoute()
+const router = useRouter()
+const cartStore = useCartStore()
+
+// 读取本地存储中的倒计时数据
+const savedTime = localStorage.getItem('remainingTime')
+const initialTime = savedTime ? parseInt(savedTime, 10) : 24 * 60 + 30 // 如果有保存时间，就使用它，否则使用默认时间
+
+const payInfo = ref({
+  payMoney: parseFloat(route.query.payMoney) || 0.00,  // 获取查询参数并转换为数字
+})
+
+
+const remainingTime = ref(initialTime) // 使用读取的剩余时间
+const timer = ref(null)
+const selectedPayMethod = ref('') // 新增：保存当前选中的支付方式
+
+// 计算倒计时的分钟和秒数
+const formattedTime = computed(() => {
+  const minutes = Math.floor(remainingTime.value / 60)
+  const seconds = remainingTime.value % 60
+  return `${minutes}分${seconds < 10 ? '0' : ''}${seconds}秒`
+})
+
+// 倒计时更新函数
+const startCountdown = () => {
+  timer.value = setInterval(() => {
+    if (remainingTime.value > 0) {
+      remainingTime.value -= 1
+      localStorage.setItem('remainingTime', remainingTime.value) // 每次更新时间都保存到 localStorage
+    } else {
+      clearInterval(timer.value)
+      alert('订单已超时，自动取消')
+      localStorage.removeItem('remainingTime') // 超时后移除倒计时数据
+      router.push('/cart');
+    }
+  }, 1000)
+}
+
+// 更新支付方式的选择
+const selectPayMethod = (method) => {
+  selectedPayMethod.value = method
+}
+
+// 支付成功按钮的点击事件
+const paymentSuccess = async () => {
+  try {
+    // 解析订单 ID 数组
+    const orderIds = JSON.parse(route.query.orderIds);
+
+    // 构造发送到后端的订单数据
+    const orderList = orderIds.map(orderId => ({ orderId }));
+
+    // 发送请求到后端接口
+    const response = await updateOrderStatus(orderList);
+
+    // 处理响应
+    ElMessage.success('支付成功，订单状态已更新！');
+    clearInterval(timer.value);
+    cartStore.cartList = [];
+    router.push('/pay/success');
+  } catch (error) {
+    console.error('支付失败:', error);
+    ElMessage.error('支付失败，请稍后再试！');
+  }
+};
+
+// 页面加载时开始倒计时
+onMounted(() => {
+  startCountdown()
+})
+
+onBeforeUnmount(() => {
+  localStorage.removeItem('payPageUrl');
+});
+
 </script>
 
 <style scoped lang="scss">
@@ -67,11 +156,6 @@ const payInfo = {}
   align-items: center;
   height: 240px;
   padding: 0 80px;
-
-  .icon {
-    font-size: 80px;
-    color: #1dc779;
-  }
 
   .tip {
     padding-left: 10px;
@@ -143,6 +227,20 @@ const payInfo = {}
     &.wx {
       background: url(https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/c66f98cff8649bd5ba722c2e8067c6ca.jpg) no-repeat center / contain;
     }
+  }
+
+  .payImg{
+    width: 210px;
+    height: 270px;
+    display: block;
+    margin-top: 20px;  /* 给图片设置间距，确保它在按钮下面 */
+    margin-left: auto;
+    margin-right: auto;  /* 图片水平居中 */
+  }
+
+  .pay-success-btn {
+    margin-top: 60px;
+    text-align: center;
   }
 }
 

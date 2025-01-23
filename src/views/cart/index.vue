@@ -11,7 +11,7 @@
           
           <!-- 购物车为空时显示 -->
           <el-empty v-if="cartItems.length === 0" description="购物车是空的">
-            <el-button type="primary" @click="$router.push('/')">去购物</el-button>
+            <el-button type="primary" @click="$router.push('/products')">去购物</el-button>
           </el-empty>
 
           <!-- 购物车列表 -->
@@ -151,6 +151,7 @@ const removeItem = (index) => {
 
 const clearCart = () => {
   cartItems.value = []
+  cartStore.cartList = []
 }
 
 // const checkout = () => {

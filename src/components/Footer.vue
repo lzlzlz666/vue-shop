@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2024 Vue商城 All Rights Reserved.</p>
+      <p>© 2025 LZ🥳 商城 All Rights Reserved.</p>
     </div>
   </div>
 </template>

@@ -31,3 +31,25 @@ export const addUserAddress = async (newAddress) => {
     throw error;
   }
 };
+
+// 创建订单
+export const createOrder = async (orderData) => {
+  try {
+    const data = await http.post('/order/generateOrder', orderData);
+    return data; // 返回订单生成结果
+  } catch (error) {
+    console.error('创建订单失败:', error);
+    throw error; // 继续抛出错误
+  }
+};
+
+// 更新订单状态（支付成功）
+export const updateOrderStatus = async (orderList) => {
+  try {
+    const data = await http.post('/order/purchaseOrder', orderList);
+    return data; // 返回更新结果
+  } catch (error) {
+    console.error('更新订单状态失败:', error);
+    throw error; // 继续抛出错误
+  }
+};
