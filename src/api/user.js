@@ -28,3 +28,36 @@ export const loginUser = async (username, password) => {
   }
 };
 
+// 用户信息接口
+export const getUserInfo = async () => {
+  try {
+    // 发送 GET 请求获取用户信息
+    const data = await http.get('/user');
+    return data;
+  } catch (error) {
+    console.error('获取用户信息失败:', error);
+    throw error; 
+  }
+};
+
+// 修改用户信息
+export const updateUserInfo = async (userInfo) => {
+  try {
+    const data = await http.post('/user/userInfo', userInfo);
+    return data;
+  } catch (error) {
+    console.error('修改用户信息失败:', error);
+    throw error; 
+  }
+}
+
+// 更新用户头像接口
+export const updateUserAvatar = async (avatarUrl) => {
+  try {
+    const data = await http.patch(`/user/updateAvatar?avatarUrl=${avatarUrl}`);
+    return data; // 返回更新头像的响应
+  } catch (error) {
+    console.error('更新头像失败:', error);
+    throw error;
+  }
+};

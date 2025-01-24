@@ -8,26 +8,9 @@
         </router-link>
       </div>
 
-      <!-- 搜索框，只有在 /products 路由下显示 -->
-      <!-- <div class="search" v-if="isProductsPage">
-        <el-input
-          v-model="searchText"
-          placeholder="请输入搜索关键词"
-          class="search-input"
-        >
-          <template #append>
-            <el-button :icon="Search">搜索</el-button>
-          </template>
-        </el-input>
-      </div> -->
-
       <!-- 导航菜单 -->
       <div class="nav-menu">
-        <el-menu
-          mode="horizontal"
-          :router="true"
-          class="menu"
-        >
+        <el-menu mode="horizontal" :router="true" class="menu">
           <el-menu-item index="/">首页</el-menu-item>
           <el-menu-item index="/products">全部商品</el-menu-item>
           <el-menu-item index="/cart">
@@ -39,10 +22,10 @@
           <!-- 用户菜单 -->
           <el-sub-menu index="user">
             <template #title>
-              <el-icon><User /></el-icon> 我的资料
+              <el-avatar :src="userPic" size="small" style="margin-left: 10px;"/>&nbsp;&nbsp; 我的
             </template>
-            <el-menu-item index="/member">个人中心</el-menu-item>
-            <el-menu-item index="/profile">个人信息</el-menu-item>
+            <el-menu-item index="/member/user">个人中心</el-menu-item>
+            <el-menu-item index="/profile">详细资料</el-menu-item>
             <el-menu-item index="/login">我要登录</el-menu-item>
             <el-menu-item @click="handleLogout">退出登录</el-menu-item>
           </el-sub-menu>
@@ -53,44 +36,52 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Search, ShoppingCart, User } from '@element-plus/icons-vue'
+import { ShoppingCart, User } from '@element-plus/icons-vue'
 import { useTokenStore } from '@/stores/token'
 import { ElMessage } from 'element-plus'
-
-const searchText = ref('')
-
 import { useCartStore } from '@/stores/cartStore'
-const cartStore = useCartStore();
+import { getUserInfo } from '@/api/user' // 假设你的接口函数在这个路径
+
+import defaultUserPic from '@/assets/default-user.png'
+
+const cartStore = useCartStore()
 const tokenStore = useTokenStore()
 const router = useRouter()
 
-const cartCount = ref(0);
-const cartItems = ref([]);
+const cartItems = ref([])
+const userPic = ref('') // 用户头像
+const cartCount = ref(0)
 
-// 获取当前路由信息
-// const route = useRoute()
-
-// 判断是否是 /products 路由
-// const isProductsPage = computed(() => route.path === '/products')
+// 获取用户信息并设置头像
+const fetchUserInfo = async () => {
+  try {
+    const data = await getUserInfo()
+    // 如果 userPic 不为空，使用返回的图片路径，否则使用默认头像
+    userPic.value = data.userPic || defaultUserPic
+    console.log(userPic.value);
+  } catch (error) {
+    console.error('获取用户信息失败:', error)
+  }
+}
 
 const handleLogout = () => {
-  tokenStore.removeToken();
-  router.push('/');
-  ElMessage.success('退出成功!');
+  tokenStore.removeToken()
+  router.push('/')
+  ElMessage.success('退出成功!')
 }
 
 onMounted(() => {
+  userPic.value = defaultUserPic
+  fetchUserInfo()
   cartItems.value = cartStore.cartList
-  console.log(cartItems)
 })
-
 </script>
 
 <style scoped>
 .header {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
@@ -115,18 +106,6 @@ onMounted(() => {
 .logo h1 {
   margin: 0;
   font-size: 24px;
-}
-
-.search {
-  flex: 1;
-  max-width: 500px;
-  margin: 0 40px;
-}
-
-.search-input :deep(.el-input-group__append) {
-  background-color: #409EFF;
-  border-color: #409EFF;
-  color: white;
 }
 
 .nav-menu {
