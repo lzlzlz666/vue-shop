@@ -111,6 +111,7 @@ import NavFooter from '../../components/Footer.vue'
 import { useCartStore } from '@/stores/cartStore'
 import { useTokenStore } from '@/stores/token'
 import { useRouter } from 'vue-router'
+import { ElMessage, ElNotification  } from 'element-plus'
 
 const cartStore = useCartStore()
 const tokenStore = useTokenStore()
@@ -170,6 +171,11 @@ const clearCart = () => {
 // 结算
 const checkout = () => {
   if (!tokenStore.token) {
+    ElNotification({
+      title: '温馨提醒：',
+      message: '请先登录！',
+      type: 'error',
+    });
     router.push('/login');
   } else {
     // 结算时只传递选中的商品

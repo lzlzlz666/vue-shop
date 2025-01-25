@@ -14,8 +14,9 @@
                 <!-- 点击头像即可上传 -->
                 <el-avatar
                   :size="350"
-                  style="margin-left: 100px; margin-top: 80px; position: relative;" 
+                  style="margin-left: 100px; margin-top: 80px; position: relative; cursor: pointer;" 
                   :src="userInfo.userPic"
+                  @click="triggerFileInput"
                 />
 
                 <!-- 更新图片 -->
@@ -98,6 +99,11 @@ import NavFooter from '../../components/Footer.vue'
 import { getUserInfo, updateUserInfo, updateUserAvatar } from '@/api/user'
 import { uploadImage } from '@/api/fileUpload'
 import { ElMessage, ElNotification  } from 'element-plus'
+import { useTokenStore } from '@/stores/token'
+import { useRouter } from 'vue-router'
+
+const tokenStore = useTokenStore()
+const router = useRouter()
 
 // 定义 ref 用来获取文件输入框
 const fileInput = ref(null);
@@ -197,6 +203,18 @@ const handleFileChange = async (event) => {
 };
 
 onMounted(() => {
+  console.log('111')
+  // 如果用户未登录 
+  if (!tokenStore.token) {
+    ElNotification({
+      title: '温馨提醒：',
+      message: '请先登录！',
+      type: 'error',
+    });
+    router.push('/login');
+    console.log('222')
+  } 
+
   fetchUserInfo();
 });
 </script>
@@ -218,6 +236,11 @@ onMounted(() => {
   align-items: center;
   margin-bottom: 20px;
   position: relative;  /* 设置为 relative 定位 */
+  transition: transform 0.3s ease; /* 添加过渡效果 */
+}
+
+.avatar:hover {
+  transform: scale(1.05); /* 鼠标悬停时放大头像 */
 }
 
 .update-img {
@@ -226,7 +249,6 @@ onMounted(() => {
   right: -90px;
   width: 44px;
   height: 44px;
-  cursor: pointer;
 }
 
 .profile-card {

@@ -43,13 +43,13 @@ export const fetchProductDetail = async (id) => {
   }
 };
 
-// export const fetchProductList = async () => {
-//   try {
-//     const data = await http.get('/product');
-//     return data;
-//   } catch (error) {
-//     console.error('获取商品列表失败:', error);
-//     throw error;  
-//   }
-// };
+export const fetchLikeProducts = async (limit) => {
+  try {
+    const data = await http.get(`/product/like?limit=${limit}`);
+    return data; // 直接返回数据
+  } catch (error) {
+    console.error('获取产品详情失败:', error);
+    throw error; // 继续抛出错误
+  }
+};
 

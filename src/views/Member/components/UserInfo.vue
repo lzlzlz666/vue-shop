@@ -3,20 +3,20 @@
     <!-- 用户信息 -->
     <div class="user-meta">
       <div class="avatar">
-        <img :src="userStore.userInfo?.avatar" />
+        <img :src="userInfo?.userPic" />
       </div>
-      <h4>{{ userStore.userInfo?.account }}</h4>
+      <h4>{{ userInfo?.nickname }}</h4>
     </div>
     <div class="item">
-      <a href="javascript:;">
+      <a>
         <span class="iconfont icon-hy"></span>
         <p>会员中心</p>
       </a>
-      <a href="javascript:;">
+      <a>
         <span class="iconfont icon-aq"></span>
         <p>安全设置</p>
       </a>
-      <a href="javascript:;">
+      <a>
         <span class="iconfont icon-dw"></span>
         <p>地址管理</p>
       </a>
@@ -29,25 +29,100 @@
       </div>
       <div class="goods-list">
         <!-- <GoodsItem v-for="good in likeList" :key="good.id" :good="good" /> -->
+        <ProductCard v-for="product in likeList" :key="product.productId" :product="product" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import { useTokenStore } from '@/stores/token'
+import { useRouter } from 'vue-router'
+import { ElMessage, ElNotification  } from 'element-plus'
+import { getUserInfo } from '@/api/user'
+import { fetchLikeProducts } from '@/api/product'
+import ProductCard from '@/components/ProductCard.vue'
 
-const userStore = reactive({
-  userInfo: {
-    account: 'lzzzzz', // 用户名
-    avatar: new URL('@/assets/lz.jpg', import.meta.url).href // 头像路径
+const tokenStore = useTokenStore()
+const router = useRouter()
+
+const likeList = ref([
+  {
+    productId: 1,
+    productImg: 'https://big-event-lz.oss-cn-hangzhou.aliyuncs.com/93650672-5399-4b91-8407-86abad4e91ee.png',
+    productName: '商品名称 1',
+    productPrice: '199.99',
+    productOriginalPrice: '299.99',
+    productSales: 1200
+  },
+  {
+    productId: 2,
+    productImg: 'https://big-event-lz.oss-cn-hangzhou.aliyuncs.com/93650672-5399-4b91-8407-86abad4e91ee.png',
+    productName: '商品名称 2',
+    productPrice: '299.99',
+    productOriginalPrice: '399.99',
+    productSales: 950
+  },
+  {
+    productId: 3,
+    productImg: 'https://big-event-lz.oss-cn-hangzhou.aliyuncs.com/93650672-5399-4b91-8407-86abad4e91ee.png',
+    productName: '商品名称 3',
+    productPrice: '129.99',
+    productOriginalPrice: '199.99',
+    productSales: 1500
   }
+]);
+
+
+const userInfo = ref({
+  username: '',
+  nickname: '',
+  email: '',
+  phoneNumber: '',
+  sex: '',
+  birthday: '',
+  address: '',
+  userPic: ''
+});
+
+// 获取用户信息
+const fetchUserInfo = async () => {
+  try {
+    const data = await getUserInfo(); // 调用封装好的获取用户信息的接口
+    userInfo.value = {
+      ...data, // 使用从接口获取的数据来更新 userInfo
+      sex: data.sex === 1 ? '男' : '女' // 将 sex 从 1/0 转换为 '男'/'女'
+    };
+  } catch (error) {
+    console.error('获取用户信息时出错:', error);
+  }
+};
+
+const fetchGoodProducts = async (limit) => {
+  const data = await fetchLikeProducts(limit);
+  likeList.value = data;
+}
+
+onMounted(() => {
+  // 如果用户未登录 
+  if (!tokenStore.token) {
+    ElNotification({
+      title: '温馨提醒：',
+      message: '请先登录！',
+      type: 'error',
+    });
+    router.push('/login');
+  } 
+
+  fetchUserInfo();
+  fetchGoodProducts(3);
 });
 </script>
 
 <style scoped lang="scss">
 .home-overview {
-  height: 132px;
+  height: 120px;
   background: url(@/assets/center-bg.png) no-repeat center / cover;
   display: flex;
 
@@ -113,7 +188,7 @@ const userStore = reactive({
   background-color: #fff;
   padding: 0 20px;
   margin-top: 20px;
-  height: 400px;
+  height: 500px;
 
   .header {
     height: 66px;
