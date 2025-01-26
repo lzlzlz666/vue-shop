@@ -102,7 +102,7 @@
 
               <!-- 提交订单 -->
               <div class="submit">
-                <el-button type="danger" size="large" style="margin-right: 60px;">取消订单</el-button>
+                <el-button @click="cancelOrder()" type="danger" size="large" style="margin-right: 60px;">取消订单</el-button>
                 <el-button @click="confirmOrder()" type="primary" size="large">提交订单</el-button>
               </div>
             </div>
@@ -121,6 +121,12 @@
               <li><span>联系方式：</span>{{ item.contact }}</li>
               <li><span>收货地址：</span>{{ item.address }}</li>
               </ul>
+                <!-- 添加删除按钮 -->
+                <img 
+                src="@/assets/delete-icon.png" 
+                alt="删除" 
+                style="width: 24px; height: 24px; cursor: pointer;" 
+                @click.stop="deleteAddressInfo(item.userAddressId)">
             </div>
           </div>
           <template #footer>
@@ -167,7 +173,7 @@ import { ElMessage } from 'element-plus'
 import NavHeader from '../../components/Header.vue'
 import NavFooter from '../../components/Footer.vue'
 import { useCartStore } from '@/stores/cartStore'
-import { fetchUserAddressList, updateDefaultAddress, addUserAddress, createOrder } from '@/api/order'
+import { fetchUserAddressList, updateDefaultAddress, addUserAddress, createOrder, deleteAddress } from '@/api/order'
 
 import { useRouter } from 'vue-router';
 
@@ -271,6 +277,25 @@ const confirmOrder = async () => {
   } catch (error) {
     ElMessage.error('订单生成失败，请稍后再试！');
     console.error('订单生成失败:', error);
+  }
+};
+
+const cancelOrder = () => {
+  ElMessage.success('订单取消生成 !');
+  router.push('/cart')
+}
+
+const deleteAddressInfo = async (addressId) => {
+  try {
+
+    const data = await deleteAddress(addressId);
+    // 从地址列表中移除该地址
+    checkInfo.value = checkInfo.value.filter(address => address.userAddressId !== addressId);
+
+    ElMessage.success('地址删除成功！');
+  } catch (error) {
+    ElMessage.error('地址删除失败，请稍后再试！');
+    console.error('地址删除失败:', error);
   }
 };
 
@@ -473,8 +498,18 @@ onMounted(async () => {
 }
 
 .addressWrapper {
-  max-height: 500px;
-  overflow-y: auto;
+  .text.item {
+    position: relative; /* 确保删除图标定位在父元素内 */
+
+    img[alt="删除"] {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+  }
 }
 
 .text {
@@ -486,7 +521,6 @@ onMounted(async () => {
   &.item {
     border: 1px solid #f5f5f5;
     margin-bottom: 10px;
-    cursor: pointer;
 
     &.active,
     &:hover {

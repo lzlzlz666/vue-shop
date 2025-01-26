@@ -53,3 +53,32 @@ export const updateOrderStatus = async (orderList) => {
     throw error; // 继续抛出错误
   }
 };
+
+// 获取我的订单商品信息
+export const getMyOrders = async () => {
+  try {
+    const data = await http.get('/order/my');
+    return data;
+  } catch(error) {
+    throw error
+  }
+}
+
+// 取消订单
+export const deleteOrder = async (id) => {
+  try {
+    const data = await http.post(`/order/${id}`);
+    return data; // 直接返回数据
+  } catch (error) {
+    console.error('获取产品详情失败:', error);
+    throw error; // 继续抛出错误
+  }
+};
+
+export const deleteAddress = async (id) => {
+  try {
+    const data = await http.post(`/order/address/${id}`);
+  } catch (error) {
+    throw error;
+  }
+}
