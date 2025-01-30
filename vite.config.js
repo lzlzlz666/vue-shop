@@ -18,4 +18,13 @@ export default defineConfig({
       },
     },
   },
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'https://47.97.108.0:8092',  // 修改为服务器 IP 地址
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/api/, ''),
+  //     },
+  //   },
+  // },  
 })

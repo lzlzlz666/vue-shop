@@ -70,10 +70,10 @@
             <div class="product-description">
               <el-tabs v-model="activeTab">
                 <el-tab-pane label="商品详情" name="detail">
-                  商品详情
+                  <ProductDetail />
                 </el-tab-pane>
                 <el-tab-pane label="商品评价" name="reviews">
-                  商品评价内容
+                  <ProductReviews />
                 </el-tab-pane>
               </el-tabs>
             </div>
@@ -88,6 +88,9 @@
   </template>
   
   <script setup>
+  import ProductDetail from '@/views/product/components/ProductDetail.vue' // 引入商品详情组件
+  import ProductReviews from '@/views/product/components/ProductReviews.vue' // 引入商品评价组件
+
   import { ref, onMounted } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import NavHeader from '../../components/Header.vue'
@@ -143,7 +146,9 @@
   }
   
   .detail-card {
-    margin: 20px 0;
+    margin: 20px 0 ;
+    margin-left: 70px;
+    margin-right: 70px;
   }
   
   .product-title {

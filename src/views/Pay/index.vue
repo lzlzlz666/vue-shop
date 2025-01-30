@@ -43,7 +43,7 @@
               </div>
               <!-- 模拟支付成功按钮 -->
               <div class="pay-success-btn">
-                <el-button type="primary" @click="paymentSuccess" style="width: 100px; height: 50px;">支付成功</el-button>
+                <el-button type="primary" @click="paymentSuccess" style="width: 100px; height: 50px;">模拟支付成功按钮!!</el-button>
               </div>
             </div>
           </div>

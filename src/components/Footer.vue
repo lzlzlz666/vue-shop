@@ -27,55 +27,98 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 LZ🥳 商城 All Rights Reserved.</p>
+      <p>
+        <span class="footer-left">
+          <span>© 2025 LZ🥳 商城 All Rights Reserved.</span>
+          <span class="footer-icon">
+            <img src="@/assets/foot-icon.png" width="18" />
+          </span>
+        </span>
+        <a href="https://beian.miit.gov.cn/#/Integrated/index" rel="noreferrer" target="_blank" style="margin-left: 10px;">
+          浙ICP备2025149076号 
+        </a>
+      </p>
     </div>
   </div>
 </template>
 
 <script setup>
+
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .footer {
   background-color: #f5f5f5;
   padding: 40px 0 20px;
   margin-top: 40px;
-}
 
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-}
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
 
-.footer-section {
-  flex: 1;
-  padding: 0 15px;
-}
+    .footer-section {
+      flex: 1;
+      padding: 0 15px;
 
-.footer-section h3 {
-  font-size: 18px;
-  margin-bottom: 20px;
-  color: #333;
-}
+      h3 {
+        font-size: 18px;
+        margin-bottom: 20px;
+        color: #333;
+      }
 
-.footer-section p {
-  margin: 10px 0;
-  color: #666;
-  cursor: pointer;
-}
+      p {
+        margin: 10px 0;
+        color: #666;
+        cursor: pointer;
 
-.footer-section p:hover {
-  color: #409EFF;
-}
+        &:hover {
+          color: #409EFF;
+        }
+      }
+    }
+  }
 
-.footer-bottom {
-  text-align: center;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #ddd;
-  color: #999;
+  .footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    color: #999;
+
+    p {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .footer-left {
+        display: flex;
+        align-items: center;
+        gap: 30px; // 控制图标和左边文字的间距
+
+        .footer-icon {
+          position: relative; // 给父容器设置相对定位
+          display: inline-block;
+          vertical-align: middle;
+
+          img {
+            position: absolute;  // 设置绝对定位
+            bottom: -10px;  // 根据需要调整位置
+            left: 10px;
+          }
+        }
+      }
+
+      a {
+        position: relative;
+        color: #999;
+        text-decoration: none; // 不显示下划线
+        left:20px;
+      }
+
+    }
+  }
 }
 </style>

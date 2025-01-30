@@ -51,6 +51,7 @@ import ProductCard from '@/components/ProductCard.vue'
 import { ref, onMounted } from 'vue';
 import { fetchCategories } from '@/api/category'; // 导入 fetchCategories 函数
 import { fetchHotProducts } from '@/api/product'; // 导入 fetchHotProducts 函数
+import { fetchBanners } from '@/api/banner'
 
 // 显式导入轮播图图片
 import lunbo1 from '@/assets/lunbo_1.jpg'
@@ -61,15 +62,18 @@ import lunbo3 from '@/assets/lunbo_3.jpg'
 const categories = ref([]); // 用于存储分类数据
 const hotProducts = ref([]); // 用于存储热销商品数据
 // 将图片路径存放到数组中
-const imageItems = [lunbo1, lunbo2, lunbo3]
+const imageItems = ref([]);
+
+const fetchBannerList = async () => {
+  const data = await fetchBanners();
+  imageItems.value = data.map(item => item.bannerImg);
+}
 
 onMounted(async () => {
-  try {
-    categories.value = await fetchCategories(); // 获取分类数据
-    hotProducts.value = await fetchHotProducts(); // 获取热销商品数据
-  } catch (error) {
-    console.error('加载数据失败:', error);
-  }
+  fetchBannerList();
+  categories.value = await fetchCategories(); // 获取分类数据
+  hotProducts.value = await fetchHotProducts(); // 获取热销商品数据
+
 });
 </script>
 
