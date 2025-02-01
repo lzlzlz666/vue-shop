@@ -61,3 +61,14 @@ export const updateUserAvatar = async (avatarUrl) => {
     throw error;
   }
 };
+
+// 根据id获取用户信息
+export const fetchUserById = async (id) => {
+  try {
+    const data = await http.get(`/user/${id}`);
+    return data; // 直接返回数据
+  } catch (error) {
+    console.error('获取用户失败:', error);
+    throw error; // 继续抛出错误
+  }
+};
