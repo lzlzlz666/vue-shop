@@ -11,9 +11,9 @@
               <!-- 商品图片 -->
               <el-col :span="12">
                 <el-carousel trigger="click" height="460px">
-                  <el-carousel-item v-for="i in 4" :key="i">
-                    <img :src="product.productImg" alt="product image">
-                  </el-carousel-item>
+                  <el-carousel-item v-for="(img, index) in (Array.isArray(product.productImgs) && product.productImgs.length > 0 ? product.productImgs : [product.productImg])" :key="index">
+                    <img :src="img" alt="product image">
+                  </el-carousel-item>                                                   
                 </el-carousel>
               </el-col>
   
