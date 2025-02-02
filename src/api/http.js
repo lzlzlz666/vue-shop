@@ -1,10 +1,14 @@
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 // 创建 Axios 实例
 const http = axios.create({
   baseURL: '/api', // 设置基础 URL
   timeout: 10000, // 设置请求超时时间
 });
+
+// 创建 router 实例
+const router = useRouter();
 
 import { useTokenStore } from '@/stores/token.js'
 // 请求拦截器
@@ -37,6 +41,14 @@ http.interceptors.response.use(
   (error) => {
     // 处理响应错误
     console.error('响应错误:', error);
+    // 判断是否是 token 过期的错误（通常是 401 状态码）
+    if (error.response && error.response.status === 401) {
+      const tokenStore = useTokenStore();
+      tokenStore.removeToken(); // 清除 token
+      // 跳转到登录页面（你可以根据自己的路由方式调整）
+      router.push('/login'); // 如果你使用 Vue Router
+    }
+
     return Promise.reject(error);
   }
 );
