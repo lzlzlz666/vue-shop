@@ -43,7 +43,7 @@
               </div>
               <!-- 模拟支付成功按钮 -->
               <div class="pay-success-btn">
-                <el-button type="primary" @click="paymentSuccess" style="width: 100px; height: 50px;">模拟支付成功按钮!!</el-button>
+                <el-button type="primary" @click="paymentSuccess" style="width: 200px; height: 50px;">模拟支付成功按钮!!</el-button>
               </div>
             </div>
           </div>
@@ -65,6 +65,7 @@ import NavFooter from '@/components/Footer.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { updateOrderStatus } from '@/api/order'
+import { pay, checkPaymentResult } from '@/api/alipay' 
 import { useCartStore } from '@/stores/cartStore'
 
 const route = useRoute()
@@ -107,8 +108,55 @@ const startCountdown = () => {
 }
 
 // 更新支付方式的选择
-const selectPayMethod = (method) => {
+const selectPayMethod = async (method) => {
   selectedPayMethod.value = method
+  if (method === 'alipay') {
+    try {
+      const orderIds = JSON.parse(route.query.orderIds);
+      // 提取第一个订单 ID
+      const traceNo = orderIds[0];
+
+      // 构造支付数据
+      const alipayData = {
+        traceNo: traceNo,  // 使用传递的订单ID作为支付追踪号
+        totalAmount: payInfo.value.payMoney.toFixed(2), // 总金额
+        subject: `订单编号 - ${route.query.orderIds}`,  // 订单标题
+      }
+
+      const queryString = new URLSearchParams(alipayData).toString();
+      // 发送 GET 请求
+      const payPage = await pay(queryString);
+
+      // 假设返回的是支付页面的HTML，嵌入到页面中显示
+      const payWindow = window.open("", "支付宝支付", "width=1200, height=900");
+      payWindow.document.write(payPage);
+      payWindow.document.close();
+
+      // 在支付页面嵌入支付结果监听逻辑
+      const checkPaymentStatus = setInterval(async () => {
+        const paymentStatus = await checkPaymentResult(traceNo); // 假设后端提供接口查询支付状态
+        if (paymentStatus === '已支付') {
+          clearInterval(checkPaymentStatus);
+
+          try {
+            // 构造发送到后端的订单数据
+            const orderList = orderIds.map(orderId => ({ orderId }));
+            // 发送请求到后端接口
+            const response = await updateOrderStatus(orderList);
+          } catch (error) {
+            console.error('订单状态更新失败:', error);
+          }
+
+          ElMessage.success('支付成功，所有订单状态已更新！');
+          cartStore.cartList = [];
+          router.push('/pay/success');
+        }
+      }, 2000); // 每2秒检查一次支付状态
+    } catch (error) {
+      console.error('支付失败:', error);
+      ElMessage.error('支付失败，请稍后再试！');
+    }
+  }
 }
 
 // 支付成功按钮的点击事件

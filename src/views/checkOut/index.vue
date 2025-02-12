@@ -266,7 +266,7 @@ const confirmOrder = async () => {
     }
 
     // 如果所有订单生成成功，提示用户并跳转到支付页面
-    ElMessage.success('所有订单生成成功！');
+    ElMessage.success('订单生成成功！');
     router.push({
       path: '/pay',
       query: {
