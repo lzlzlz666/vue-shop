@@ -17,3 +17,10 @@
 - 登录注册
 
 ![项目截图](https://github.com/lzlzlz666/vue-shop/blob/main/1740559508446.jpg)
+![项目截图](https://github.com/lzlzlz666/vue-shop/blob/main/1740559540522.jpg)
+![项目截图](https://github.com/lzlzlz666/vue-shop/blob/main/1740559569687.jpg)
+![项目截图](https://github.com/lzlzlz666/vue-shop/blob/main/1740559606978.jpg)
+![项目截图](https://github.com/lzlzlz666/vue-shop/blob/main/1740559651789.jpg)
+![项目截图](https://github.com/lzlzlz666/vue-shop/blob/main/1740559714226.jpg)
+![项目截图](https://github.com/lzlzlz666/vue-shop/blob/main/1740559749403.jpg)
+![项目截图](https://github.com/lzlzlz666/vue-shop/blob/main/1740559780673.jpg)
